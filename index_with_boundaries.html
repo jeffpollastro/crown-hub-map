@@ -41,22 +41,21 @@
             display: none;
         }
 
-        .control-panel.collapsed {
-            padding: 0;
-        }
-
         .panel-toggle {
-            display: none;
+            display: block;
             width: 100%;
-            background: white;
+            background: none;
             border: none;
-            padding: 10px 15px;
+            padding: 8px 0 4px;
             font-size: 13px;
             font-weight: 600;
             color: #333;
             cursor: pointer;
             text-align: left;
-            border-radius: 8px;
+        }
+
+        .panel-toggle:hover {
+            color: #2563eb;
         }
 
         .control-panel h3 {
@@ -72,29 +71,25 @@
             display: none;
         }
 
-        .legend.collapsed {
-            padding: 0;
-        }
-
         .legend-toggle {
-            display: none;
+            display: block;
             width: 100%;
-            background: white;
+            background: none;
             border: none;
-            padding: 8px 12px;
+            padding: 4px 0;
             font-size: 12px;
             font-weight: 600;
             color: #333;
             cursor: pointer;
             text-align: left;
-            border-radius: 8px;
         }
 
-        /* Mobile: show toggles, auto-collapse */
+        .legend-toggle:hover {
+            color: #2563eb;
+        }
+
+        /* Mobile: auto-collapse and shrink */
         @media (max-width: 768px) {
-            .panel-toggle, .legend-toggle {
-                display: block;
-            }
             .control-panel {
                 max-width: 200px;
             }
@@ -324,7 +319,7 @@
 
     <!-- Control Panel -->
     <div class="control-panel" id="controlPanel">
-        <button class="panel-toggle" id="panelToggle">&#9776; Filters</button>
+        <button class="panel-toggle" id="panelToggle">&#9660; Hide Filters</button>
         <div class="panel-body">
             <h3>Girls Basketball: The Opportunity Gap</h3>
 
@@ -358,7 +353,7 @@
 
     <!-- Legend -->
     <div class="legend" id="legendPanel">
-        <button class="legend-toggle" id="legendToggle">&#9632; Legend</button>
+        <button class="legend-toggle" id="legendToggle">&#9660; Hide Legend</button>
         <div class="legend-body">
             <h4>Legend</h4>
             <div class="legend-item">
@@ -471,7 +466,15 @@
                 losses: 17,
                 pf: 422,
                 pa: 1027,
-                h2h: [],
+                h2h: [
+                    { opponent: "Emmaus", mtnScore: 18, valScore: 74 },
+                    { opponent: "Easton", mtnScore: 11, valScore: 100 },
+                    { opponent: "Dieruff", mtnScore: 31, valScore: 73 },
+                    { opponent: "Whitehall", mtnScore: 8, valScore: 54 },
+                    { opponent: "Northampton", mtnScore: 19, valScore: 61 },
+                    { opponent: "Freedom", mtnScore: 25, valScore: 67 },
+                    { opponent: "Wm Allen", mtnScore: 28, valScore: 51 }
+                ],
                 note: "Northern ES campus - serves Smithfield, Middle Smithfield, Lehman townships"
             },
             {
@@ -486,7 +489,17 @@
                 losses: 15,
                 pf: 519,
                 pa: 907,
-                h2h: [],
+                h2h: [
+                    { opponent: "Parkland", mtnScore: 6, valScore: 57 },
+                    { opponent: "Emmaus", mtnScore: 19, valScore: 62 },
+                    { opponent: "Dieruff", mtnScore: 30, valScore: 60 },
+                    { opponent: "Liberty", mtnScore: 22, valScore: 60 },
+                    { opponent: "Nazareth", mtnScore: 19, valScore: 80 },
+                    { opponent: "Whitehall", mtnScore: 35, valScore: 52 },
+                    { opponent: "Northampton", mtnScore: 36, valScore: 50 },
+                    { opponent: "Beth Cath", mtnScore: 14, valScore: 30 },
+                    { opponent: "AL Cent Cath", mtnScore: 32, valScore: 65 }
+                ],
                 note: "Southern ES campus - serves East Stroudsburg, Stroud Township"
             },
             {
@@ -501,7 +514,16 @@
                 losses: 11,
                 pf: 649,
                 pa: 865,
-                h2h: [],
+                h2h: [
+                    { opponent: "Parkland", mtnScore: 6, valScore: 56 },
+                    { opponent: "Emmaus", mtnScore: 4, valScore: 81 },
+                    { opponent: "Easton", mtnScore: 11, valScore: 73 },
+                    { opponent: "Liberty", mtnScore: 24, valScore: 70 },
+                    { opponent: "Whitehall", mtnScore: 39, valScore: 49 },
+                    { opponent: "Northampton", mtnScore: 33, valScore: 45 },
+                    { opponent: "Freedom", mtnScore: 22, valScore: 53 },
+                    { opponent: "Wm Allen", mtnScore: 29, valScore: 51 }
+                ],
                 note: "Stroudsburg Area School District"
             },
             {
@@ -516,7 +538,16 @@
                 losses: 13,
                 pf: 548,
                 pa: 886,
-                h2h: [],
+                h2h: [
+                    { opponent: "Emmaus", mtnScore: 13, valScore: 60 },
+                    { opponent: "Easton", mtnScore: 27, valScore: 78 },
+                    { opponent: "Dieruff", mtnScore: 9, valScore: 52 },
+                    { opponent: "Nazareth", mtnScore: 18, valScore: 106 },
+                    { opponent: "Whitehall", mtnScore: 14, valScore: 48 },
+                    { opponent: "Northampton", mtnScore: 31, valScore: 46 },
+                    { opponent: "Freedom", mtnScore: 18, valScore: 60 },
+                    { opponent: "Wm Allen", mtnScore: 47, valScore: 42 }
+                ],
                 note: "Original PM campus in Swiftwater — $1.49M gym renovation (2024)"
             },
             {
@@ -531,7 +562,15 @@
                 losses: 10,
                 pf: 558,
                 pa: 810,
-                h2h: [],
+                h2h: [
+                    { opponent: "Parkland", mtnScore: 12, valScore: 60 },
+                    { opponent: "Dieruff", mtnScore: 15, valScore: 57 },
+                    { opponent: "Liberty", mtnScore: 31, valScore: 68 },
+                    { opponent: "Nazareth", mtnScore: 25, valScore: 65 },
+                    { opponent: "Freedom", mtnScore: 29, valScore: 56 },
+                    { opponent: "Beth Cath", mtnScore: 17, valScore: 67 },
+                    { opponent: "AL Cent Cath", mtnScore: 29, valScore: 60 }
+                ],
                 note: "Pocono Summit — $3.38M Wellness Center with full basketball court (12,900 SF)"
             },
             {
@@ -546,7 +585,14 @@
                 losses: 15,
                 pf: 480,
                 pa: 925,
-                h2h: [],
+                h2h: [
+                    { opponent: "Parkland", mtnScore: 13, valScore: 48 },
+                    { opponent: "Dieruff", mtnScore: 13, valScore: 53 },
+                    { opponent: "Liberty", mtnScore: 14, valScore: 71 },
+                    { opponent: "Nazareth", mtnScore: 7, valScore: 61 },
+                    { opponent: "Beth Cath", mtnScore: 20, valScore: 59 },
+                    { opponent: "AL Cent Cath", mtnScore: 24, valScore: 62 }
+                ],
                 note: "Brodheadsville area - southern Monroe County"
             }
         ];
@@ -564,6 +610,12 @@
                 losses: 4,
                 pf: 835,
                 pa: 475,
+                h2h: [
+                    { opponent: "ES South", valScore: 57, mtnScore: 6 },
+                    { opponent: "PM West", valScore: 60, mtnScore: 12 },
+                    { opponent: "Pleasant Valley", valScore: 48, mtnScore: 13 },
+                    { opponent: "Stroudsburg", valScore: 56, mtnScore: 6 }
+                ],
                 note: "South Whitehall Township - largest EPC school"
             },
             {
@@ -578,6 +630,12 @@
                 losses: 4,
                 pf: 1090,
                 pa: 674,
+                h2h: [
+                    { opponent: "ES South", valScore: 62, mtnScore: 19 },
+                    { opponent: "ES North", valScore: 74, mtnScore: 18 },
+                    { opponent: "PM East", valScore: 60, mtnScore: 13 },
+                    { opponent: "Stroudsburg", valScore: 81, mtnScore: 4 }
+                ],
                 note: "East Penn School District - south of Allentown"
             },
             {
@@ -592,6 +650,11 @@
                 losses: 2,
                 pf: 1051,
                 pa: 522,
+                h2h: [
+                    { opponent: "ES North", valScore: 100, mtnScore: 11 },
+                    { opponent: "PM East", valScore: 78, mtnScore: 27 },
+                    { opponent: "Stroudsburg", valScore: 73, mtnScore: 11 }
+                ],
                 note: "Delaware River border - eastern edge of Lehigh Valley"
             },
             {
@@ -606,6 +669,13 @@
                 losses: 6,
                 pf: 1000,
                 pa: 685,
+                h2h: [
+                    { opponent: "ES South", valScore: 60, mtnScore: 30 },
+                    { opponent: "PM West", valScore: 57, mtnScore: 15 },
+                    { opponent: "ES North", valScore: 73, mtnScore: 31 },
+                    { opponent: "PM East", valScore: 52, mtnScore: 9 },
+                    { opponent: "Pleasant Valley", valScore: 53, mtnScore: 13 }
+                ],
                 note: "Allentown City SD - east/south Allentown"
             },
             {
@@ -620,6 +690,12 @@
                 losses: 8,
                 pf: 925,
                 pa: 878,
+                h2h: [
+                    { opponent: "ES South", valScore: 60, mtnScore: 22 },
+                    { opponent: "PM West", valScore: 68, mtnScore: 31 },
+                    { opponent: "Pleasant Valley", valScore: 71, mtnScore: 14 },
+                    { opponent: "Stroudsburg", valScore: 70, mtnScore: 24 }
+                ],
                 note: "Bethlehem Area SD - larger of two public HS"
             },
             {
@@ -634,6 +710,12 @@
                 losses: 6,
                 pf: 987,
                 pa: 606,
+                h2h: [
+                    { opponent: "ES South", valScore: 80, mtnScore: 19 },
+                    { opponent: "PM West", valScore: 65, mtnScore: 25 },
+                    { opponent: "PM East", valScore: 106, mtnScore: 18 },
+                    { opponent: "Pleasant Valley", valScore: 61, mtnScore: 7 }
+                ],
                 note: "Blue Eagles - northern Northampton County"
             },
             {
@@ -648,6 +730,12 @@
                 losses: 12,
                 pf: 668,
                 pa: 786,
+                h2h: [
+                    { opponent: "ES South", valScore: 52, mtnScore: 35 },
+                    { opponent: "ES North", valScore: 54, mtnScore: 8 },
+                    { opponent: "PM East", valScore: 48, mtnScore: 14 },
+                    { opponent: "Stroudsburg", valScore: 49, mtnScore: 39 }
+                ],
                 note: "Whitehall-Coplay SD"
             },
             {
@@ -662,6 +750,12 @@
                 losses: 12,
                 pf: 640,
                 pa: 812,
+                h2h: [
+                    { opponent: "ES South", valScore: 50, mtnScore: 36 },
+                    { opponent: "ES North", valScore: 61, mtnScore: 19 },
+                    { opponent: "PM East", valScore: 46, mtnScore: 31 },
+                    { opponent: "Stroudsburg", valScore: 45, mtnScore: 33 }
+                ],
                 note: "Konkrete Kids - cement region history"
             },
             {
@@ -676,6 +770,11 @@
                 losses: 2,
                 pf: 847,
                 pa: 557,
+                h2h: [
+                    { opponent: "ES South", valScore: 30, mtnScore: 14 },
+                    { opponent: "PM West", valScore: 67, mtnScore: 17 },
+                    { opponent: "Pleasant Valley", valScore: 59, mtnScore: 20 }
+                ],
                 note: "Becahi - private Catholic school"
             },
             {
@@ -690,6 +789,12 @@
                 losses: 9,
                 pf: 765,
                 pa: 786,
+                h2h: [
+                    { opponent: "ES North", valScore: 67, mtnScore: 25 },
+                    { opponent: "PM West", valScore: 56, mtnScore: 29 },
+                    { opponent: "PM East", valScore: 60, mtnScore: 18 },
+                    { opponent: "Stroudsburg", valScore: 53, mtnScore: 22 }
+                ],
                 note: "Bethlehem Area SD - Bethlehem Township"
             },
             {
@@ -704,6 +809,11 @@
                 losses: 13,
                 pf: 522,
                 pa: 815,
+                h2h: [
+                    { opponent: "ES North", valScore: 51, mtnScore: 28 },
+                    { opponent: "PM East", valScore: 42, mtnScore: 47 },
+                    { opponent: "Stroudsburg", valScore: 51, mtnScore: 29 }
+                ],
                 note: "Allentown City SD - central/west Allentown"
             },
             {
@@ -718,6 +828,11 @@
                 losses: 8,
                 pf: 770,
                 pa: 702,
+                h2h: [
+                    { opponent: "ES South", valScore: 65, mtnScore: 32 },
+                    { opponent: "PM West", valScore: 60, mtnScore: 29 },
+                    { opponent: "Pleasant Valley", valScore: 62, mtnScore: 24 }
+                ],
                 note: "Private Catholic school - Diocese of Allentown"
             }
         ];
@@ -739,21 +854,36 @@
         // ============================================
         // CREATE POPUP HTML
         // ============================================
-        function createPopupHTML(school) {
+        function createPopupHTML(school, isMountain) {
             const econLine = school.econDisadvantaged !== null
                 ? `<div class="econ-disadvantaged" title="% of students eligible for free/reduced lunch (household income ≤185% of federal poverty line)">Econ. Disadvantaged: ${school.econDisadvantaged}%</div>`
                 : `<div class="econ-disadvantaged" style="color:#999">Econ. Disadvantaged: N/A (private)</div>`;
 
-            // Head-to-head results (mountain schools only)
+            // Head-to-head results vs other region
             let h2hBlock = '';
             if (school.h2h && school.h2h.length > 0) {
-                const rows = school.h2h.map(g =>
-                    `<div class="h2h-row">
-                        <span class="h2h-opponent">${g.opponent}</span>
-                        <span class="h2h-result ${g.result === 'W' ? 'win' : 'loss'}">${g.result} ${g.score}</span>
-                    </div>`
-                ).join('');
-                h2hBlock = `<div class="h2h"><strong>vs. Valley (Girls Varsity):</strong>${rows}</div>`;
+                const wins = school.h2h.filter(g => isMountain ? g.mtnScore > g.valScore : g.valScore > g.mtnScore).length;
+                const losses = school.h2h.length - wins;
+                const totalOwn = school.h2h.reduce((s, g) => s + (isMountain ? g.mtnScore : g.valScore), 0);
+                const totalOpp = school.h2h.reduce((s, g) => s + (isMountain ? g.valScore : g.mtnScore), 0);
+                const avgMargin = ((totalOwn - totalOpp) / school.h2h.length).toFixed(1);
+                const marginLabel = avgMargin > 0 ? `+${avgMargin}` : avgMargin;
+
+                const rows = school.h2h.map(g => {
+                    const ownScore = isMountain ? g.mtnScore : g.valScore;
+                    const oppScore = isMountain ? g.valScore : g.mtnScore;
+                    const won = ownScore > oppScore;
+                    return `<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:12px;">
+                        <span>${g.opponent}</span>
+                        <span style="color:${won ? '#16a34a' : '#dc2626'};font-weight:600;">${ownScore}-${oppScore} ${won ? 'W' : 'L'}</span>
+                    </div>`;
+                }).join('');
+
+                const regionLabel = isMountain ? 'vs. Valley' : 'vs. Mountain';
+                h2hBlock = `<div style="margin-top:8px;border-top:1px solid #eee;padding-top:8px;">
+                    <strong style="font-size:13px;">${regionLabel}: ${wins}-${losses} (Avg margin: ${marginLabel})</strong>
+                    ${rows}
+                </div>`;
             }
 
             const recordLine = (school.wins || school.losses)
@@ -964,7 +1094,7 @@
 
                 const marker = new mapboxgl.Marker(el)
                     .setLngLat([school.lng, school.lat])
-                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school)))
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school, true)))
                     .addTo(map);
 
                 mountainMarkers.push(marker);
@@ -984,7 +1114,7 @@
 
                 const marker = new mapboxgl.Marker(el)
                     .setLngLat([school.lng, school.lat])
-                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school)))
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school, false)))
                     .addTo(map);
 
                 valleyMarkers.push(marker);
@@ -995,17 +1125,26 @@
         // FILTER CONTROLS
         // ============================================
         // Panel collapse toggles
+        function togglePanel(panelId, btnId, label) {
+            const panel = document.getElementById(panelId);
+            const btn = document.getElementById(btnId);
+            panel.classList.toggle('collapsed');
+            const isCollapsed = panel.classList.contains('collapsed');
+            btn.innerHTML = isCollapsed ? '&#9654; Show ' + label : '&#9660; Hide ' + label;
+        }
         document.getElementById('panelToggle').addEventListener('click', () => {
-            document.getElementById('controlPanel').classList.toggle('collapsed');
+            togglePanel('controlPanel', 'panelToggle', 'Filters');
         });
         document.getElementById('legendToggle').addEventListener('click', () => {
-            document.getElementById('legendPanel').classList.toggle('collapsed');
+            togglePanel('legendPanel', 'legendToggle', 'Legend');
         });
 
         // Auto-collapse on mobile
         if (window.innerWidth <= 768) {
             document.getElementById('controlPanel').classList.add('collapsed');
+            document.getElementById('panelToggle').innerHTML = '&#9654; Show Filters';
             document.getElementById('legendPanel').classList.add('collapsed');
+            document.getElementById('legendToggle').innerHTML = '&#9654; Show Legend';
         }
 
         function setupFilterControls() {
