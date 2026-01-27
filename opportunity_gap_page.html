@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Opportunity Gap - Crown Hub</title>
+    <title>Girls Basketball: The Opportunity Gap - Crown Hub</title>
     <style>
         * {
             margin: 0;
@@ -199,6 +199,40 @@
             border: 2px solid #ddd;
         }
 
+        /* Narrative Section */
+        .narrative-section {
+            max-width: 960px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+
+        .narrative-section h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .narrative-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 14px;
+        }
+
+        .definition-box {
+            background: #f5f0e1;
+            border-left: 4px solid #c9a227;
+            border-radius: 4px;
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .definition-box strong {
+            color: #1a1a1a;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .stat-cards {
@@ -225,35 +259,53 @@
     <!-- Header -->
     <div class="page-header">
         <h1>The Opportunity Gap</h1>
-        <p>Mountain schools serve 7,400 students with half the resources and twice the distance to competitive basketball development.</p>
+        <p>There are zero girls AAU basketball programs on the mountain. The Valley has six. This is what our girls are up against.</p>
     </div>
 
     <!-- Stat Cards -->
     <div class="stat-cards">
         <div class="stat-card">
-            <div class="number">2</div>
-            <div class="label">AAU programs within 50 miles of the Poconos &mdash; the Valley has 6+</div>
+            <div class="number">0</div>
+            <div class="label">Girls AAU programs on the mountain &mdash; the Valley has 6+</div>
         </div>
         <div class="stat-card">
-            <div class="number">1</div>
-            <div class="label">YMCA serving 167,000 residents across 600 sq mi of Monroe County</div>
+            <div class="number">49%</div>
+            <div class="label">of Mountain students are economically disadvantaged &mdash; and still expected to pay $1,500-$5,000 for off-season development</div>
         </div>
         <div class="stat-card">
             <div class="number">45-60 min</div>
-            <div class="label">Drive to competitive development &mdash; Valley families drive 15 min</div>
+            <div class="label">Drive to the nearest competitive girls development &mdash; Valley families drive 15 min</div>
         </div>
     </div>
 
     <!-- Map -->
     <div class="map-section">
-        <!-- Replace src with hosted URL of index_with_boundaries.html -->
         <iframe src="https://jeffpollastro.github.io/crown-hub-map/index_with_boundaries.html" title="Crown Hub School Map"></iframe>
         <div class="map-caption">Click any school marker for enrollment and economic data. Toggle "Show Gap Summary" for a side-by-side comparison.</div>
     </div>
 
+    <!-- What Economically Disadvantaged Means -->
+    <div class="narrative-section">
+        <h2>What the Numbers Mean</h2>
+        <div class="definition-box">
+            <strong>"Economically Disadvantaged"</strong> refers to students eligible for free or reduced-price lunch under the National School Lunch Program. A family of four qualifies at a household income of roughly $55,500 or less (185% of the federal poverty line). When a school shows 49% economically disadvantaged, it means nearly half of its students come from families where paying for groceries is a daily calculation &mdash; let alone $1,500-$5,000 per season for AAU basketball.
+        </div>
+        <p>On the mountain, that 49% average is spread across every school. There is no wealthy neighboring district to absorb the cost or subsidize programs. In the Valley, high-poverty districts like Allentown (91%) sit next to affluent ones like Parkland (23%) &mdash; and all of them are within 20 minutes of multiple AAU programs, YMCAs, and training facilities.</p>
+    </div>
+
+    <!-- The Real Problem -->
+    <div class="narrative-section">
+        <h2>Beyond the Data: What We See on the Ground</h2>
+        <p>The numbers tell part of the story. The rest plays out in gyms, living rooms, and transfer paperwork across the Poconos every year:</p>
+        <p><strong>Parents aren't championing basketball year-round.</strong> Many families expect coaches to develop their daughters entirely within the regular season. When schools hold open gyms in the off-season, attendance is minimal. The culture of year-round development that Valley programs take for granted does not exist here.</p>
+        <p><strong>Varsity-level girls prioritize work over basketball.</strong> In economically disadvantaged households, a part-time job isn't optional &mdash; it's survival. Girls who could be developing their game are instead working shifts, because no one has built a local pathway that makes basketball worth the tradeoff.</p>
+        <p><strong>The best players leave.</strong> Girls who do excel and find their way into competitive basketball often join Valley AAU programs out of necessity &mdash; there is nothing for them here. And the ones who develop into standout players? They transfer to private institutions like Bethlehem Catholic, which has built one of the region's strongest girls programs. The mountain develops talent, then watches it walk out the door.</p>
+        <p><strong>Girls aren't watching basketball.</strong> Without local role models, competitive programs, or visible pathways, girls on the mountain aren't growing up as basketball fans or aspiring players. The pipeline doesn't just leak &mdash; it was never built.</p>
+    </div>
+
     <!-- Comparison Table -->
     <div class="comparison-section">
-        <h2>Mountain vs. Lehigh Valley</h2>
+        <h2>Mountain vs. Lehigh Valley: Girls Basketball</h2>
         <table class="comparison-table">
             <thead>
                 <tr>
@@ -279,8 +331,8 @@
                     <td class="valley">46%</td>
                 </tr>
                 <tr class="worse">
-                    <td class="metric">AAU Programs (30 mi radius)</td>
-                    <td class="mountain">2</td>
+                    <td class="metric">Girls AAU Programs</td>
+                    <td class="mountain">0</td>
                     <td class="valley">6+</td>
                 </tr>
                 <tr>
@@ -294,11 +346,11 @@
                     <td class="valley">4.1</td>
                 </tr>
                 <tr class="worse">
-                    <td class="metric">Drive to Development</td>
+                    <td class="metric">Drive to Girls Development</td>
                     <td class="mountain">45-60 min</td>
                     <td class="valley">10-20 min</td>
                 </tr>
-                <tr>
+                <tr class="worse">
                     <td class="metric">AAU Cost as % of Median Income</td>
                     <td class="mountain">2.4-9.1%</td>
                     <td class="valley">1.5-5.4%</td>

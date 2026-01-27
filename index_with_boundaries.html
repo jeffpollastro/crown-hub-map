@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crown Hub - School Map with Boundaries</title>
+    <title>Crown Hub - Girls Basketball Opportunity Gap</title>
 
     <!-- Mapbox GL JS CSS -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
@@ -115,7 +115,32 @@
             font-size: 14px;
             font-weight: 600;
             color: #2563eb;
+            margin-bottom: 4px;
         }
+
+        .school-popup .h2h {
+            font-size: 12px;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .school-popup .h2h-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .school-popup .h2h-opponent {
+            color: #666;
+        }
+
+        .school-popup .h2h-result {
+            font-weight: 600;
+        }
+
+        .school-popup .h2h-result.win { color: #059669; }
+        .school-popup .h2h-result.loss { color: #dc2626; }
 
         .school-popup .note {
             font-size: 12px;
@@ -244,7 +269,7 @@
 
     <!-- Control Panel -->
     <div class="control-panel">
-        <h3>Crown Hub School Map</h3>
+        <h3>Girls Basketball: The Opportunity Gap</h3>
 
         <h4>School Markers</h4>
         <label>
@@ -296,7 +321,7 @@
 
     <!-- Gap Summary Panel -->
     <div class="gap-summary" id="gapSummary">
-        <h4>Mountain vs. Valley Comparison</h4>
+        <h4>Girls Basketball: Mountain vs. Valley</h4>
         <table>
             <thead>
                 <tr>
@@ -317,8 +342,8 @@
                     <td class="valley-col">46%</td>
                 </tr>
                 <tr>
-                    <td>AAU Programs (30 mi)</td>
-                    <td class="mountain-col">2</td>
+                    <td>Girls AAU Programs</td>
+                    <td class="mountain-col">0</td>
                     <td class="valley-col">6+</td>
                 </tr>
                 <tr>
@@ -380,9 +405,11 @@
                 county: "Pike",
                 enrollment: 794,
                 econDisadvantaged: 52,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                // h2h: head-to-head vs valley opponents. Format: { opponent, result: "W"/"L", score: "45-38" }
+                h2h: [],
                 note: "Northern ES campus - serves Smithfield, Middle Smithfield, Lehman townships"
             },
             {
@@ -392,9 +419,10 @@
                 county: "Monroe",
                 enrollment: 1320,
                 econDisadvantaged: 52,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                h2h: [],
                 note: "Southern ES campus - serves East Stroudsburg, Stroud Township"
             },
             {
@@ -404,9 +432,10 @@
                 county: "Monroe",
                 enrollment: 1245,
                 econDisadvantaged: 50,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                h2h: [],
                 note: "Stroudsburg Area School District"
             },
             {
@@ -416,9 +445,10 @@
                 county: "Monroe",
                 enrollment: 1263,
                 econDisadvantaged: 49.5,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                h2h: [],
                 note: "Original PM campus in Swiftwater"
             },
             {
@@ -428,9 +458,10 @@
                 county: "Monroe",
                 enrollment: 1486,
                 econDisadvantaged: 49.5,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                h2h: [],
                 note: "Pocono Summit - opened 2002"
             },
             {
@@ -440,9 +471,10 @@
                 county: "Monroe",
                 enrollment: 1352,
                 econDisadvantaged: 43,
-                aauNearby: 2,
+                aauNearby: 0,
                 wins: 0,
                 losses: 0,
+                h2h: [],
                 note: "Brodheadsville area - southern Monroe County"
             }
         ];
@@ -601,16 +633,34 @@
         // ============================================
         function createPopupHTML(school) {
             const econLine = school.econDisadvantaged !== null
-                ? `<div class="econ-disadvantaged">Econ. Disadvantaged: ${school.econDisadvantaged}%</div>`
+                ? `<div class="econ-disadvantaged" title="% of students eligible for free/reduced lunch (household income ≤185% of federal poverty line)">Econ. Disadvantaged: ${school.econDisadvantaged}%</div>`
                 : `<div class="econ-disadvantaged" style="color:#999">Econ. Disadvantaged: N/A (private)</div>`;
+
+            // Head-to-head results (mountain schools only)
+            let h2hBlock = '';
+            if (school.h2h && school.h2h.length > 0) {
+                const rows = school.h2h.map(g =>
+                    `<div class="h2h-row">
+                        <span class="h2h-opponent">${g.opponent}</span>
+                        <span class="h2h-result ${g.result === 'W' ? 'win' : 'loss'}">${g.result} ${g.score}</span>
+                    </div>`
+                ).join('');
+                h2hBlock = `<div class="h2h"><strong>vs. Valley (Girls Varsity):</strong>${rows}</div>`;
+            }
+
+            const recordLine = (school.wins || school.losses)
+                ? `<div class="record">Girls Varsity Record: ${school.wins}-${school.losses}</div>`
+                : '';
+
             return `
                 <div class="school-popup">
                     <h4>${school.name}</h4>
                     <div class="county">${school.county} County</div>
                     <div class="enrollment">Enrollment: ${school.enrollment.toLocaleString()} students</div>
                     ${econLine}
-                    <div class="aau-nearby">AAU Programs (30 mi): ${school.aauNearby}</div>
-                    <div class="record">Record: ${school.wins}-${school.losses}</div>
+                    <div class="aau-nearby">Girls AAU Programs (30 mi): ${school.aauNearby}</div>
+                    ${recordLine}
+                    ${h2hBlock}
                     <div class="note">${school.note}</div>
                 </div>
             `;
@@ -757,21 +807,26 @@
         // ============================================
         // FILTER GEOJSON TO SPECIFIC DISTRICTS
         // ============================================
+        // Districts to explicitly exclude (partial name collisions)
+        const EXCLUDE_DISTRICTS = ["east pennsboro"];
+
         function filterDistricts(geojson, districtNames) {
             return {
                 type: 'FeatureCollection',
                 features: geojson.features.filter(feature => {
-                    // The property name may vary - check common variations
                     const districtName = feature.properties.school_dis ||
                                         feature.properties.SCHOOL_DIS ||
                                         feature.properties.name ||
                                         feature.properties.NAME ||
                                         feature.properties.district ||
                                         '';
+                    const lower = districtName.toLowerCase();
 
-                    // Check if any of our district names are contained in this feature's name
+                    // Reject explicitly excluded districts
+                    if (EXCLUDE_DISTRICTS.some(ex => lower.includes(ex))) return false;
+
                     return districtNames.some(name =>
-                        districtName.toLowerCase().includes(name.toLowerCase())
+                        lower.includes(name.toLowerCase())
                     );
                 })
             };
