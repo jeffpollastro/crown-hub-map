@@ -233,6 +233,11 @@
             color: #1a1a1a;
         }
 
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .stat-cards {
@@ -250,6 +255,10 @@
 
             .map-section iframe {
                 height: 400px;
+            }
+
+            .comparison-table {
+                min-width: 500px;
             }
         }
     </style>
@@ -319,6 +328,7 @@
         <p style="font-size:16px;color:#444;margin-bottom:16px;line-height:1.6;">Valley teams are <strong>44-1</strong> against the mountain this season, outscoring mountain schools <strong>2,732 to 915</strong> &mdash; an average margin of <strong>61-20</strong>. The only mountain win: PM East over William Allen, 47-42.</p>
 
         <!-- Valley team summary -->
+        <div class="table-scroll">
         <table class="comparison-table" style="margin-bottom:32px;">
             <thead>
                 <tr>
@@ -409,9 +419,11 @@
                 </tr>
             </tbody>
         </table>
+        </div>
 
         <!-- Game-by-game breakdown -->
         <h3 style="font-size:20px;margin-bottom:12px;">Game-by-Game Results</h3>
+        <div class="table-scroll">
         <table class="comparison-table">
             <thead>
                 <tr>
@@ -475,11 +487,13 @@
                 <tr><td class="mountain">Stroudsburg</td><td>Wm Allen</td><td>29-51</td><td class="valley">L</td></tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     <!-- Comparison Table -->
     <div class="comparison-section">
         <h2>Mountain vs. Lehigh Valley: Girls Basketball</h2>
+        <div class="table-scroll">
         <table class="comparison-table">
             <thead>
                 <tr>
@@ -531,6 +545,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 
     <!-- CTA -->
