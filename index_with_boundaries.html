@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crown Hub - School Map with Boundaries</title>
+
+    <!-- Mapbox GL JS CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1;
+            max-width: 280px;
+        }
+
+        .control-panel h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .control-panel h4 {
+            margin: 12px 0 8px 0;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-panel label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .control-panel input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Custom Popup Styling */
+        .mapboxgl-popup-content {
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+
+        .school-popup {
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .school-popup h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #1a1a1a;
+        }
+
+        .school-popup .county {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .school-popup .enrollment {
+            font-size: 13px;
+            color: #059669;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .school-popup .econ-disadvantaged {
+            font-size: 13px;
+            color: #b45309;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .school-popup .aau-nearby {
+            font-size: 13px;
+            color: #7c3aed;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .school-popup .record {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .school-popup .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 8px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+
+        .legend h4 {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-line {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .mountain-dot { background: #dc2626; }
+        .valley-dot { background: #2563eb; }
+        .mountain-line { background: rgba(220, 38, 38, 0.6); }
+        .valley-line { background: rgba(37, 99, 235, 0.6); }
+
+        /* Gap Summary Panel */
+        .gap-summary {
+            display: none;
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1;
+            font-size: 13px;
+            max-width: 420px;
+        }
+
+        .gap-summary.show {
+            display: block;
+        }
+
+        .gap-summary h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .gap-summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .gap-summary th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+            padding: 4px 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .gap-summary td {
+            padding: 4px 8px;
+        }
+
+        .gap-summary .mountain-col { color: #dc2626; font-weight: 600; }
+        .gap-summary .valley-col { color: #2563eb; font-weight: 600; }
+
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">Loading boundaries...</div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <h3>Crown Hub School Map</h3>
+
+        <h4>School Markers</h4>
+        <label>
+            <input type="checkbox" id="showMountain" checked>
+            Mountain Schools (6 Area)
+        </label>
+        <label>
+            <input type="checkbox" id="showValley" checked>
+            Valley Schools
+        </label>
+
+        <h4>Analysis</h4>
+        <label>
+            <input type="checkbox" id="showGapSummary">
+            Show Gap Summary
+        </label>
+
+        <h4>District Boundaries</h4>
+        <label>
+            <input type="checkbox" id="showMountainBoundaries" checked>
+            Mountain Districts
+        </label>
+        <label>
+            <input type="checkbox" id="showValleyBoundaries" checked>
+            Valley Districts
+        </label>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <h4>Legend</h4>
+        <div class="legend-item">
+            <div class="legend-dot mountain-dot"></div>
+            Mountain Schools
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot valley-dot"></div>
+            Valley Schools
+        </div>
+        <div class="legend-item">
+            <div class="legend-line mountain-line"></div>
+            Mountain Districts
+        </div>
+        <div class="legend-item">
+            <div class="legend-line valley-line"></div>
+            Valley Districts
+        </div>
+    </div>
+
+    <!-- Gap Summary Panel -->
+    <div class="gap-summary" id="gapSummary">
+        <h4>Mountain vs. Valley Comparison</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Mountain (6)</th>
+                    <th>Valley (11)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Enrollment</td>
+                    <td class="mountain-col">7,460</td>
+                    <td class="valley-col">23,604</td>
+                </tr>
+                <tr>
+                    <td>Avg Econ. Disadvantaged</td>
+                    <td class="mountain-col">49%</td>
+                    <td class="valley-col">46%</td>
+                </tr>
+                <tr>
+                    <td>AAU Programs (30 mi)</td>
+                    <td class="mountain-col">2</td>
+                    <td class="valley-col">6+</td>
+                </tr>
+                <tr>
+                    <td>Facilities / 100 sq mi</td>
+                    <td class="mountain-col">1.6</td>
+                    <td class="valley-col">4.1</td>
+                </tr>
+                <tr>
+                    <td>Drive to Development</td>
+                    <td class="mountain-col">45-60 min</td>
+                    <td class="valley-col">10-20 min</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Mapbox GL JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+    <script>
+        // ============================================
+        // MAPBOX TOKEN
+        // ============================================
+        mapboxgl.accessToken = 'pk.eyJ1IjoianBvbGxhc3RybyIsImEiOiJjbTJwMXBnYmEwbmdmMmpxOHFpODV4dzkzIn0.BCBx0qgWI8Qnx8ufXttnVw';
+
+        // ============================================
+        // DISTRICT NAMES (for filtering boundary data)
+        // ============================================
+        const MOUNTAIN_DISTRICTS = [
+            "East Stroudsburg Area",
+            "Stroudsburg Area",
+            "Pocono Mountain",
+            "Pleasant Valley"
+        ];
+
+        const VALLEY_DISTRICTS = [
+            "Parkland",
+            "East Penn",
+            "Easton Area",
+            "Allentown City",
+            "Bethlehem Area",
+            "Nazareth Area",
+            "Whitehall-Coplay",
+            "Northampton Area"
+        ];
+
+        // ============================================
+        // SCHOOL DATA (from your existing file)
+        // ============================================
+        // Enrollment data: 2023-24 school year (NCES/PIAA sources)
+        const mountainSchools = [
+            {
+                name: "East Stroudsburg North Senior High",
+                lat: 41.1773559,
+                lng: -75.0180069,
+                county: "Pike",
+                enrollment: 794,
+                econDisadvantaged: 52,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Northern ES campus - serves Smithfield, Middle Smithfield, Lehman townships"
+            },
+            {
+                name: "East Stroudsburg South Senior High",
+                lat: 41.0054221,
+                lng: -75.1848393,
+                county: "Monroe",
+                enrollment: 1320,
+                econDisadvantaged: 52,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Southern ES campus - serves East Stroudsburg, Stroud Township"
+            },
+            {
+                name: "Stroudsburg High School",
+                lat: 40.9844056,
+                lng: -75.2054380,
+                county: "Monroe",
+                enrollment: 1245,
+                econDisadvantaged: 50,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Stroudsburg Area School District"
+            },
+            {
+                name: "Pocono Mountain East High School",
+                lat: 41.1012090,
+                lng: -75.3246122,
+                county: "Monroe",
+                enrollment: 1263,
+                econDisadvantaged: 49.5,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Original PM campus in Swiftwater"
+            },
+            {
+                name: "Pocono Mountain West High School",
+                lat: 41.1091,
+                lng: -75.4227,
+                county: "Monroe",
+                enrollment: 1486,
+                econDisadvantaged: 49.5,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Pocono Summit - opened 2002"
+            },
+            {
+                name: "Pleasant Valley High School",
+                lat: 40.9223216,
+                lng: -75.4036194,
+                county: "Monroe",
+                enrollment: 1352,
+                econDisadvantaged: 43,
+                aauNearby: 2,
+                wins: 0,
+                losses: 0,
+                note: "Brodheadsville area - southern Monroe County"
+            }
+        ];
+
+        const valleySchools = [
+            {
+                name: "Parkland High School",
+                lat: 40.6394322,
+                lng: -75.5463193,
+                county: "Lehigh",
+                enrollment: 3242,
+                econDisadvantaged: 23,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "South Whitehall Township - largest EPC school"
+            },
+            {
+                name: "Emmaus High School",
+                lat: 40.5344360,
+                lng: -75.5055071,
+                county: "Lehigh",
+                enrollment: 2819,
+                econDisadvantaged: 21,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "East Penn School District - south of Allentown"
+            },
+            {
+                name: "Easton Area High School",
+                lat: 40.6824176,
+                lng: -75.2525493,
+                county: "Northampton",
+                enrollment: 2824,
+                econDisadvantaged: 65,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Delaware River border - eastern edge of Lehigh Valley"
+            },
+            {
+                name: "Louis E. Dieruff High School",
+                lat: 40.6213779,
+                lng: -75.4418771,
+                county: "Lehigh",
+                enrollment: 1857,
+                econDisadvantaged: 91,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Allentown City SD - east/south Allentown"
+            },
+            {
+                name: "Liberty High School",
+                lat: 40.6293176,
+                lng: -75.3713544,
+                county: "Northampton",
+                enrollment: 2587,
+                econDisadvantaged: 42,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Bethlehem Area SD - larger of two public HS"
+            },
+            {
+                name: "Nazareth Area High School",
+                lat: 40.7421599,
+                lng: -75.2985348,
+                county: "Northampton",
+                enrollment: 1627,
+                econDisadvantaged: 26,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Blue Eagles - northern Northampton County"
+            },
+            {
+                name: "Whitehall High School",
+                lat: 40.6483463,
+                lng: -75.5041908,
+                county: "Lehigh",
+                enrollment: 1447,
+                econDisadvantaged: 65,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Whitehall-Coplay SD"
+            },
+            {
+                name: "Northampton Senior High School",
+                lat: 40.6879862,
+                lng: -75.4904073,
+                county: "Northampton",
+                enrollment: 1854,
+                econDisadvantaged: 41,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Konkrete Kids - cement region history"
+            },
+            {
+                name: "Bethlehem Catholic High School",
+                lat: 40.6420923,
+                lng: -75.3715559,
+                county: "Northampton",
+                enrollment: 550,
+                econDisadvantaged: null,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Becahi - private Catholic school"
+            },
+            {
+                name: "Freedom High School",
+                lat: 40.6644266,
+                lng: -75.3399645,
+                county: "Northampton",
+                enrollment: 1813,
+                econDisadvantaged: 42,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Bethlehem Area SD - Bethlehem Township"
+            },
+            {
+                name: "William Allen High School",
+                lat: 40.5986593,
+                lng: -75.4938801,
+                county: "Lehigh",
+                enrollment: 2984,
+                econDisadvantaged: 91,
+                aauNearby: 6,
+                wins: 0,
+                losses: 0,
+                note: "Allentown City SD - central/west Allentown"
+            }
+        ];
+
+        // ============================================
+        // INITIALIZE MAP
+        // ============================================
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [-75.35, 40.85],
+            zoom: 9
+        });
+
+        // Store markers for filtering
+        let mountainMarkers = [];
+        let valleyMarkers = [];
+
+        // ============================================
+        // CREATE POPUP HTML
+        // ============================================
+        function createPopupHTML(school) {
+            const econLine = school.econDisadvantaged !== null
+                ? `<div class="econ-disadvantaged">Econ. Disadvantaged: ${school.econDisadvantaged}%</div>`
+                : `<div class="econ-disadvantaged" style="color:#999">Econ. Disadvantaged: N/A (private)</div>`;
+            return `
+                <div class="school-popup">
+                    <h4>${school.name}</h4>
+                    <div class="county">${school.county} County</div>
+                    <div class="enrollment">Enrollment: ${school.enrollment.toLocaleString()} students</div>
+                    ${econLine}
+                    <div class="aau-nearby">AAU Programs (30 mi): ${school.aauNearby}</div>
+                    <div class="record">Record: ${school.wins}-${school.losses}</div>
+                    <div class="note">${school.note}</div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // LOAD MAP AND DATA
+        // ============================================
+        map.on('load', async () => {
+            // Add navigation controls
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+            // Load district boundaries
+            await loadDistrictBoundaries();
+
+            // Add school markers
+            addSchoolMarkers();
+
+            // Set up filter controls
+            setupFilterControls();
+        });
+
+        // ============================================
+        // LOAD DISTRICT BOUNDARIES FROM PA OPEN DATA
+        // ============================================
+        async function loadDistrictBoundaries() {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+
+            try {
+                // Fetch PA school district boundaries GeoJSON
+                // Direct API endpoint from PA Open Data Portal
+                const response = await fetch('https://data.pa.gov/api/geospatial/dzyk-hhe6?method=export&format=GeoJSON');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch district boundaries');
+                }
+
+                const allDistricts = await response.json();
+
+                // Filter to only our districts
+                const mountainDistrictsGeoJSON = filterDistricts(allDistricts, MOUNTAIN_DISTRICTS);
+                const valleyDistrictsGeoJSON = filterDistricts(allDistricts, VALLEY_DISTRICTS);
+
+                // Add mountain districts source and layer
+                map.addSource('mountain-districts', {
+                    type: 'geojson',
+                    data: mountainDistrictsGeoJSON
+                });
+
+                map.addLayer({
+                    id: 'mountain-districts-fill',
+                    type: 'fill',
+                    source: 'mountain-districts',
+                    paint: {
+                        'fill-color': '#dc2626',
+                        'fill-opacity': 0.15
+                    }
+                });
+
+                map.addLayer({
+                    id: 'mountain-districts-line',
+                    type: 'line',
+                    source: 'mountain-districts',
+                    paint: {
+                        'line-color': '#dc2626',
+                        'line-width': 2,
+                        'line-opacity': 0.7
+                    }
+                });
+
+                // Add valley districts source and layer
+                map.addSource('valley-districts', {
+                    type: 'geojson',
+                    data: valleyDistrictsGeoJSON
+                });
+
+                map.addLayer({
+                    id: 'valley-districts-fill',
+                    type: 'fill',
+                    source: 'valley-districts',
+                    paint: {
+                        'fill-color': '#2563eb',
+                        'fill-opacity': 0.15
+                    }
+                });
+
+                map.addLayer({
+                    id: 'valley-districts-line',
+                    type: 'line',
+                    source: 'valley-districts',
+                    paint: {
+                        'line-color': '#2563eb',
+                        'line-width': 2,
+                        'line-opacity': 0.7
+                    }
+                });
+
+                // Add district name labels
+                map.addLayer({
+                    id: 'mountain-districts-labels',
+                    type: 'symbol',
+                    source: 'mountain-districts',
+                    layout: {
+                        'text-field': ['get', 'school_dis'],
+                        'text-size': 11,
+                        'text-anchor': 'center'
+                    },
+                    paint: {
+                        'text-color': '#991b1b',
+                        'text-halo-color': 'white',
+                        'text-halo-width': 1.5
+                    }
+                });
+
+                map.addLayer({
+                    id: 'valley-districts-labels',
+                    type: 'symbol',
+                    source: 'valley-districts',
+                    layout: {
+                        'text-field': ['get', 'school_dis'],
+                        'text-size': 11,
+                        'text-anchor': 'center'
+                    },
+                    paint: {
+                        'text-color': '#1e40af',
+                        'text-halo-color': 'white',
+                        'text-halo-width': 1.5
+                    }
+                });
+
+                console.log('District boundaries loaded successfully');
+                console.log('Mountain districts found:', mountainDistrictsGeoJSON.features.length);
+                console.log('Valley districts found:', valleyDistrictsGeoJSON.features.length);
+
+            } catch (error) {
+                console.error('Error loading district boundaries:', error);
+                alert('Could not load district boundaries. The map will show school markers only.\n\nError: ' + error.message);
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        // ============================================
+        // FILTER GEOJSON TO SPECIFIC DISTRICTS
+        // ============================================
+        function filterDistricts(geojson, districtNames) {
+            return {
+                type: 'FeatureCollection',
+                features: geojson.features.filter(feature => {
+                    // The property name may vary - check common variations
+                    const districtName = feature.properties.school_dis ||
+                                        feature.properties.SCHOOL_DIS ||
+                                        feature.properties.name ||
+                                        feature.properties.NAME ||
+                                        feature.properties.district ||
+                                        '';
+
+                    // Check if any of our district names are contained in this feature's name
+                    return districtNames.some(name =>
+                        districtName.toLowerCase().includes(name.toLowerCase())
+                    );
+                })
+            };
+        }
+
+        // ============================================
+        // ADD SCHOOL MARKERS
+        // ============================================
+        // Scale marker size by poverty rate: 12px at 20% to 24px at 91%
+        function markerSize(econPct) {
+            if (econPct === null) return 14; // private school default
+            return Math.round(12 + (econPct - 20) * (12 / 71));
+        }
+
+        function addSchoolMarkers() {
+            // Add Mountain School markers (red)
+            mountainSchools.forEach(school => {
+                const size = markerSize(school.econDisadvantaged);
+                const el = document.createElement('div');
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+                el.style.backgroundColor = '#dc2626';
+                el.style.borderRadius = '50%';
+                el.style.border = '3px solid white';
+                el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+                el.style.cursor = 'pointer';
+
+                const marker = new mapboxgl.Marker(el)
+                    .setLngLat([school.lng, school.lat])
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school)))
+                    .addTo(map);
+
+                mountainMarkers.push(marker);
+            });
+
+            // Add Valley School markers (blue)
+            valleySchools.forEach(school => {
+                const size = markerSize(school.econDisadvantaged);
+                const el = document.createElement('div');
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+                el.style.backgroundColor = '#2563eb';
+                el.style.borderRadius = '50%';
+                el.style.border = '3px solid white';
+                el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+                el.style.cursor = 'pointer';
+
+                const marker = new mapboxgl.Marker(el)
+                    .setLngLat([school.lng, school.lat])
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(createPopupHTML(school)))
+                    .addTo(map);
+
+                valleyMarkers.push(marker);
+            });
+        }
+
+        // ============================================
+        // FILTER CONTROLS
+        // ============================================
+        function setupFilterControls() {
+            // School marker toggles
+            document.getElementById('showMountain').addEventListener('change', (e) => {
+                mountainMarkers.forEach(marker => {
+                    marker.getElement().style.display = e.target.checked ? 'block' : 'none';
+                });
+            });
+
+            document.getElementById('showValley').addEventListener('change', (e) => {
+                valleyMarkers.forEach(marker => {
+                    marker.getElement().style.display = e.target.checked ? 'block' : 'none';
+                });
+            });
+
+            // Gap summary toggle
+            document.getElementById('showGapSummary').addEventListener('change', (e) => {
+                document.getElementById('gapSummary').classList.toggle('show', e.target.checked);
+            });
+
+            // District boundary toggles
+            document.getElementById('showMountainBoundaries').addEventListener('change', (e) => {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                if (map.getLayer('mountain-districts-fill')) {
+                    map.setLayoutProperty('mountain-districts-fill', 'visibility', visibility);
+                    map.setLayoutProperty('mountain-districts-line', 'visibility', visibility);
+                    map.setLayoutProperty('mountain-districts-labels', 'visibility', visibility);
+                }
+            });
+
+            document.getElementById('showValleyBoundaries').addEventListener('change', (e) => {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                if (map.getLayer('valley-districts-fill')) {
+                    map.setLayoutProperty('valley-districts-fill', 'visibility', visibility);
+                    map.setLayoutProperty('valley-districts-line', 'visibility', visibility);
+                    map.setLayoutProperty('valley-districts-labels', 'visibility', visibility);
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
