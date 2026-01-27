@@ -37,12 +37,67 @@
             max-width: 280px;
         }
 
+        .control-panel.collapsed .panel-body {
+            display: none;
+        }
+
+        .control-panel.collapsed {
+            padding: 0;
+        }
+
+        .panel-toggle {
+            display: none;
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
         .control-panel h3 {
             margin-bottom: 10px;
             font-size: 14px;
             color: #333;
             border-bottom: 1px solid #eee;
             padding-bottom: 8px;
+        }
+
+        /* Legend collapse */
+        .legend.collapsed .legend-body {
+            display: none;
+        }
+
+        .legend.collapsed {
+            padding: 0;
+        }
+
+        .legend-toggle {
+            display: none;
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        /* Mobile: show toggles, auto-collapse */
+        @media (max-width: 768px) {
+            .panel-toggle, .legend-toggle {
+                display: block;
+            }
+            .control-panel {
+                max-width: 200px;
+            }
         }
 
         .control-panel h4 {
@@ -268,54 +323,60 @@
     <div class="loading" id="loading">Loading boundaries...</div>
 
     <!-- Control Panel -->
-    <div class="control-panel">
-        <h3>Girls Basketball: The Opportunity Gap</h3>
+    <div class="control-panel" id="controlPanel">
+        <button class="panel-toggle" id="panelToggle">&#9776; Filters</button>
+        <div class="panel-body">
+            <h3>Girls Basketball: The Opportunity Gap</h3>
 
-        <h4>School Markers</h4>
-        <label>
-            <input type="checkbox" id="showMountain" checked>
-            Mountain Schools (6 Area)
-        </label>
-        <label>
-            <input type="checkbox" id="showValley" checked>
-            Valley Schools
-        </label>
+            <h4>School Markers</h4>
+            <label>
+                <input type="checkbox" id="showMountain" checked>
+                Mountain Schools (6 Area)
+            </label>
+            <label>
+                <input type="checkbox" id="showValley" checked>
+                Valley Schools
+            </label>
 
-        <h4>Analysis</h4>
-        <label>
-            <input type="checkbox" id="showGapSummary">
-            Show Gap Summary
-        </label>
+            <h4>Analysis</h4>
+            <label>
+                <input type="checkbox" id="showGapSummary">
+                Show Gap Summary
+            </label>
 
-        <h4>District Boundaries</h4>
-        <label>
-            <input type="checkbox" id="showMountainBoundaries" checked>
-            Mountain Districts
-        </label>
-        <label>
-            <input type="checkbox" id="showValleyBoundaries" checked>
-            Valley Districts
-        </label>
+            <h4>District Boundaries</h4>
+            <label>
+                <input type="checkbox" id="showMountainBoundaries" checked>
+                Mountain Districts
+            </label>
+            <label>
+                <input type="checkbox" id="showValleyBoundaries" checked>
+                Valley Districts
+            </label>
+        </div>
     </div>
 
     <!-- Legend -->
-    <div class="legend">
-        <h4>Legend</h4>
-        <div class="legend-item">
-            <div class="legend-dot mountain-dot"></div>
-            Mountain Schools
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot valley-dot"></div>
-            Valley Schools
-        </div>
-        <div class="legend-item">
-            <div class="legend-line mountain-line"></div>
-            Mountain Districts
-        </div>
-        <div class="legend-item">
-            <div class="legend-line valley-line"></div>
-            Valley Districts
+    <div class="legend" id="legendPanel">
+        <button class="legend-toggle" id="legendToggle">&#9632; Legend</button>
+        <div class="legend-body">
+            <h4>Legend</h4>
+            <div class="legend-item">
+                <div class="legend-dot mountain-dot"></div>
+                Mountain Schools
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot valley-dot"></div>
+                Valley Schools
+            </div>
+            <div class="legend-item">
+                <div class="legend-line mountain-line"></div>
+                Mountain Districts
+            </div>
+            <div class="legend-item">
+                <div class="legend-line valley-line"></div>
+                Valley Districts
+            </div>
         </div>
     </div>
 
@@ -933,6 +994,20 @@
         // ============================================
         // FILTER CONTROLS
         // ============================================
+        // Panel collapse toggles
+        document.getElementById('panelToggle').addEventListener('click', () => {
+            document.getElementById('controlPanel').classList.toggle('collapsed');
+        });
+        document.getElementById('legendToggle').addEventListener('click', () => {
+            document.getElementById('legendPanel').classList.toggle('collapsed');
+        });
+
+        // Auto-collapse on mobile
+        if (window.innerWidth <= 768) {
+            document.getElementById('controlPanel').classList.add('collapsed');
+            document.getElementById('legendPanel').classList.add('collapsed');
+        }
+
         function setupFilterControls() {
             // School marker toggles
             document.getElementById('showMountain').addEventListener('change', (e) => {
